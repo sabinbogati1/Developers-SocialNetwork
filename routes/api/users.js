@@ -5,10 +5,28 @@ const bcrypt = require('bcryptjs');//For password hashing
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
+
+//Load Input Validation
+const validateRegisterInput = require('./../../validation/register');
+const validateLoginInput = require('./../../validation/login');
+
 const keys = require('../../config/keys');
 
 //Load User model
 const User = require("./../../models/User");
+
+
+
+//@route GET api/users/current
+//@desc Tests current user
+//@access Private
+
+router.get('/current', passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        res.json({ user: req.user });
+    }
+)
+
 
 
 //@route GET api/user/test
@@ -26,6 +44,14 @@ router.get('/test', (req,res)=>{
 //@access Public
 router.post('/register', (req,res)=>{
     console.log("register api called...");
+
+    const {errors, isValid} = validateRegisterInput(req.body);
+
+    if(!isValid){
+            return res.status(400).json(errors);
+    }
+
+
     User.findOne({email: req.body.email}, function (err,user){
         if(err){
             // res.status(422).send({err:"User Already exist"});
@@ -35,7 +61,8 @@ router.post('/register', (req,res)=>{
         else{
             console.log("User --register -- else");
             if(user){
-                res.status(422).send({err:"User Already exist"});
+                errors.email = "User Already exist";
+                res.status(422).send(errors);
             }
             else{
 
@@ -70,6 +97,11 @@ router.post('/register', (req,res)=>{
 });
 
 router.post('/login', (req,res)=>{
+    const {errors, isValid} = validateLoginInput(req.body);
+
+    if(!isValid){
+         return res.status(400).json(errors);
+    }
 
     let email = req.body.email;
     let password = req.body.password;
@@ -81,7 +113,8 @@ router.post('/login', (req,res)=>{
             console.log("/login -- ", user)
             //Check for user
             if(!user){
-                return res.status(404).json({email : 'User not found'});
+                errors.email = "User not found"
+               // return res.status(404).json({email : 'User not found'});
             }
 
             //Check Password
@@ -101,7 +134,8 @@ router.post('/login', (req,res)=>{
 
                     }
                     else{
-                        return res.status(400).json({password: 'Password incorrect'});
+                        errors.password = "Password incorrect..";
+                        //return res.status(400).json({password: 'Password incorrect'});
                     }
                 })
 
@@ -111,15 +145,6 @@ router.post('/login', (req,res)=>{
 })
 
 
-//@route GET api/users/current
-//@desc Tests current user
-//@access Private
-
-router.get('/current', passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        res.json({ user: req.user });
-    }
-)
 
 
 module.exports = router;
