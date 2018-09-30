@@ -7,7 +7,7 @@ const ProfileSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'users'
-    },
+    },//Used User Model Ref like Foreign Key
     handle: {
         type: String,
         required: true,
@@ -117,13 +117,15 @@ education:[
             },
             instagram:{
                 type:String
-            },
+            }
+
+        },
             
             date:{
                 type:Date,
                 default:Date.now
             }
-  }
+  
 });
 
-module.exports = Profile = moongoose.model('profile', ProfileSchema); 
+module.exports = Profile = mongoose.model('profile', ProfileSchema); 
