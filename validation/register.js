@@ -3,6 +3,7 @@ const isEmpty = require('./is-empty');
 
 module.exports = function validateRegisterInput(data){
 
+    console.log("register validation data :: ", data);
     let errors  = {};
 
     data.name = !isEmpty(data.name) ? data.name : ''; //If dataName is empty ite won't be string
@@ -28,6 +29,10 @@ module.exports = function validateRegisterInput(data){
 
     if(!Validator.isLength(data.password, {min: 6, max: 30})){
         errors.password = "Password must be at least 6 characters...";
+    }
+
+    if(Validator.isEmpty(data.password2)){
+        errors.password2 = "Conform password is invalid...";
     }
 
     return {

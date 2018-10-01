@@ -14,9 +14,6 @@ class Login extends Component{
 
 
     onChange(e){
-        console.log("e.target.name :", e.target.name);
-        console.log("e.target.value :", e.target.value);
-
         this.setState({
             [e.target.name]: e.target.value
         });
@@ -30,7 +27,6 @@ class Login extends Component{
             password: this.state.password,
         }
 
-        console.log("User :: ", User);
     }
     render(){
         return(
