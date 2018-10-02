@@ -23,6 +23,12 @@ class Register extends Component{
         }
     }
 
+    componentDidMount(){
+        if(this.props.auth.isAuthenticated){
+            this.props.history.push('/dashboard');
+        }
+    }
+
 
     componentWillReceiveProps (nextProps){
         console.log("componentWillReciveProps -- nextProps :: ", nextProps);
@@ -90,7 +96,7 @@ class Register extends Component{
                                 </div>
 
                                 <div className="form-group">
-                                    <input type="email"className={classnames('form-control form-control-lg',{
+                                    <input type="email" className={classnames('form-control form-control-lg',{
                                         'is-invalid': errors.email
                                     })}
                                            placeholder="Email Address" name="email" value={this.state.email} onChange={this.onChange.bind(this)}/>
