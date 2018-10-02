@@ -1,6 +1,13 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import classnames from "classnames";
+
+import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
+
+
+import {registeruser} from "../../actions/authActions";
 
 
 class Register extends Component{
@@ -13,6 +20,17 @@ class Register extends Component{
             password:"",
             password2:"",
             errors:{}
+        }
+    }
+
+
+    componentWillReceiveProps (nextProps){
+        console.log("componentWillReciveProps -- nextProps :: ", nextProps);
+        if(nextProps.errors){
+            console.log("nextProps.errors :: ", nextProps.errors);
+            this.setState({
+                errors: nextProps.errors
+            })
         }
     }
 
@@ -33,19 +51,20 @@ class Register extends Component{
                 password2: this.state.password2
             }
 
-            axios.post('/api/users/register', newUser)
-                .then( res => console.log("register res.data ---> ", res.data))
-                .catch(err => this.setState({
-                    errors: err.response.data
-                }));
+           this.props.registeruser(newUser, this.props.history);
+
+            // axios.post('/api/users/register', newUser)
+            //     .then( res => console.log("register res.data ---> ", res.data))
+            //     .catch(err => this.setState({
+            //         errors: err.response.data
+            //     }));
 
     }
 
     render(){
 
+        console.log("this.props.errors -- Register :: ", this.props.errors);
         const {errors}= this.state;
-        //const errors = this.state.errors;
-        console.log("errors :: ", errors);
 
         return(
             <div className="register">
@@ -114,9 +133,6 @@ class Register extends Component{
                                     )}
                                 </div>
 
-
-
-
                                 <input type="submit" className="btn btn-info btn-block mt-4"/>
                             </form>
                         </div>
@@ -127,5 +143,17 @@ class Register extends Component{
     }
 }
 
+Register.propTypes={
+    registerUser : PropTypes.func.isRequired,
+    auth : PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
+}
 
-export default Register;
+ function mapStateToProps(state){
+    return{
+        auth: state.auth,
+        errors: state.errors
+    }
+}
+
+export default connect(mapStateToProps, {registeruser})(withRouter(Register));
