@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import TextFieldGroup from "../common/TextFieldGroup";
+
 import PropTypes from "prop-types";
+
+import TextFieldGroup from "../common/TextFieldGroup";
+import TextAreaGroup from "../common/TextAreaGroup";
+import InputGroup from "../common/InputGroup";
+import SelectListGroup from "../common/SelectListGroup";
 
 
 
@@ -64,4 +69,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(null)(CreateProfile);
+export default connect(mapStateToProps)(CreateProfile);
